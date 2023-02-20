@@ -1,12 +1,15 @@
 import pygame
 
-from src.config import Config
+from src.config import *
+
+width = WINDOW_WIDTH
+height = WINDOW_HEIGHT
+screen = pygame.Surface((0, 0))
 
 
-class Window:
+def init():
+    global screen, height, width
+
     pygame.init()
-
-    width = Config.WINDOW_WIDTH
-    height = Config.WINDOW_HEIGHT
     screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption(Config.CAPTION)
+    pygame.display.set_caption(CAPTION)

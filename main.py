@@ -1,30 +1,23 @@
 import pygame
-
-from src.window import Window
-from src.time import Time
-from src.input import Input
-from src.scenes.scene import SceneManager
-from src.assets import Assets
+import src.input as input
+import src.window as window
+import src.time as time
+import src.scenes.scene_manager as scene_manager
 from src.scenes.loading_scene import LoadingScreen
-from src.audio import Audio
 
 
 class Game:
     def __init__(self):
-        self.window = Window()
-        self.time = Time()
-        self.input = Input()
-        self.assets = Assets()
-        self.audio = Audio()
-        self.sceneManager = SceneManager(self.input, self.assets, self.audio)
-        self.sceneManager.switch_scene(LoadingScreen)
+        window.init()
+        input.init()
+        scene_manager.init(LoadingScreen())
 
     def run(self):
         while True:
-            self.input.update()
-            self.sceneManager.update(self.time.dt)
-            self.sceneManager.render(self.window.screen)
-            self.time.update()
+            input.update()
+            scene_manager.update(time.dt)
+            scene_manager.render(window.screen)
+            time.update()
             pygame.display.update()
 
 

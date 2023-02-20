@@ -1,9 +1,10 @@
 import pygame
 
+dt = 0.2
+clock = pygame.time.Clock()
 
-class Time:
-    dt = 0.2
-    clock = pygame.time.Clock()
 
-    def update(self):
-        self.dt = self.clock.tick() / 1000
+def update():
+    global dt
+    global clock
+    dt = clock.tick() / 1000

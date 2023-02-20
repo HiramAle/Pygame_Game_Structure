@@ -1,37 +1,16 @@
-import enum
-
-import pygame
-from src.components import *
-from src.config import Config
+from src.sprite import Sprite
+from src.config import *
 
 
-class Cable(Renderable, Position):
-    def __init__(self, position: tuple, color: str):
-        Renderable.__init__(self)
-        Position.__init__(self)
+class Cable(Sprite):
+    def __init__(self, position: tuple, color: str, name: str):
+        super().__init__(position)
         self.x, self.y = position
+        self.name = name
         self.color = color
         self.image = pygame.Surface((100, 16))
-        self.image.fill(color)
-        self.rect = self.get_rect(self.position_as_tuple)
-        self.dragging = False
+        self._image.fill(color)
+        self.interactive = True
 
     def __repr__(self):
-        return str(self.color)
-
-    def update(self, dt: float):
-        if self.centered:
-            self.rect.center = self.position_as_tuple
-        else:
-            self.rect.topleft = self.position_as_tuple
-
-    def render(self, display: pygame.Surface):
-        image = self.image.copy()
-        if not self.visible:
-            return
-        if self.opacity != 255:
-            image.set_alpha(self.opacity)
-        if self.scale != 1:
-            image = pygame.transform.scale_by(image, self.scale)
-            self.rect = image.get_rect(center=self.position_as_tuple)
-        display.blit(image, self.rect)
+        return str(self.name)

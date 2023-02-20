@@ -1,61 +1,48 @@
 from __future__ import annotations
-
 import pygame
-from typing import Type
-
-from src.config import Config
-from src.input import Input
-from src.assets import Assets
-from src.audio import Audio
+import src.input as input
+import src.assets as assets
+from src.config import *
+from src.sprite import Sprite
 
 
 class Scene:
     """
     Base class for all scenes
     """
-    display = pygame.Surface((Config.CANVAS_WIDTH, Config.CANVAS_HEIGHT))
-    cursor = "arrow"
 
-    def __init__(self, manager: SceneManager):
-        self.manager = manager
-        self.assets = manager.assets
-        self.input = manager.input
-        self.audio = manager.audio
+    def __init__(self, name: str):
+        self.name = name
+        self.display = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
+        self.cursor = "arrow"
+        self.sprites: list[Sprite] = []
+        self.triggers = []
+        self.interactiveSprites = [sprite for sprite in self.sprites if sprite.interactive]
 
-    def set_cursor(self, cursor: str):
-        if cursor != self.cursor:
-            self.assets.set_cursor(cursor)
-            self.cursor = cursor
+    def update_cursor(self):
+        if any(sprite.pressed() for sprite in self.interactiveSprites):
+            pygame.mouse.set_cursor(assets.cursors["grab"])
+            return
+        if any(sprite.rect.collidepoint(input.mousePosition) for sprite in self.interactiveSprites):
+            pygame.mouse.set_cursor(assets.cursors["hand"])
+        else:
+            pygame.mouse.set_cursor(assets.cursors["arrow"])
 
-    def update(self, dt: float): ...
+    def add_sprites(self, *args):
+        for sprite in args:
+            self.sprites.append(sprite)
+        self.interactiveSprites = [sprite for sprite in self.sprites if sprite.interactive]
 
-    def render(self): ...
+    def update_sprites(self, dt: float):
+        for sprite in self.sprites:
+            sprite.update(dt)
 
-
-class SceneManager:
-    stackScene: list[Scene] = []
-    input: Input = None
-
-    def __init__(self, game_input: Input, game_assets: Assets, audio: Audio):
-        self.input = game_input
-        self.assets = game_assets
-        self.audio = audio
-
-    @property
-    def current_scene(self) -> Scene:
-        return self.stackScene[-1]
-
-    @current_scene.setter
-    def current_scene(self, scene: Scene):
-        self.stackScene.append(scene)
-
-    def switch_scene(self, scene_class: Type[Scene]):
-        self.current_scene = scene_class(self)
+    def render_sprites(self):
+        for sprite in self.sprites:
+            sprite.render(self.display)
 
     def update(self, dt: float):
-        self.current_scene.update(dt)
+        self.update_cursor()
 
-    def render(self, screen: pygame.Surface):
-        self.current_scene.render()
-        screen.blit(pygame.transform.scale(self.current_scene.display,
-                                           (Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT)), (0, 0))
+    def render(self):
+        ...

@@ -5,16 +5,9 @@ class Renderable:
     def __init__(self):
         self.visible = True
         self.opacity = 255
-        self.image: pygame.Surface = pygame.Surface((16, 16))
-        self.rect: pygame.Rect = self.image.get_rect()
+        self._image: pygame.Surface = pygame.Surface((16, 16))
         self.centered = True
         self.scale = 1
-
-    def get_rect(self, position: tuple) -> pygame.Rect:
-        if self.centered:
-            return self.image.get_rect(center=position)
-        else:
-            return self.image.get_rect(topleft=position)
 
 
 class Position:
