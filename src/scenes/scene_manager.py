@@ -28,8 +28,8 @@ def exit_scene() -> None:
     stackScene.pop()
 
 
-def update(dt: float) -> None:
-    get_current_scene().update(dt)
+def update() -> None:
+    get_current_scene().update()
 
 
 def render(screen: pygame.Surface) -> None:

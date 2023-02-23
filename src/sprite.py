@@ -38,7 +38,7 @@ class Sprite(Position, Renderable):
     def position(self, new_position: tuple[int | float, int | float]):
         self.x, self.y = new_position
 
-    def update(self, dt: float):
+    def update(self):
         ...
 
     def render(self, display: pygame.Surface):
@@ -58,5 +58,10 @@ class Sprite(Position, Renderable):
 
     def clicked(self) -> bool:
         if self.hovered() and input.mouseButtons["left"]:
+            return True
+        return False
+
+    def released(self):
+        if self.hovered() and input.mouseButtons["left_release"]:
             return True
         return False

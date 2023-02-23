@@ -19,9 +19,10 @@ class LoadingScreen(Scene):
         self.loading = Event()
         pygame.mouse.set_visible(False)
         assets.preload()
-        Thread(name="Loading", target=self.load).start()
-        self.add_sprites(Text((160, 90), "L O A D I N G", WHITE_MOTION, 32))
         self.loadingStages = 0
+        Thread(name="Loading", target=self.load).start()
+        self.sprites = self.new_group()
+        self.sprites.add(Text((160, 90), "L O A D I N G", WHITE_MOTION, 32))
 
     def load(self):
         self.loading.set()
@@ -35,13 +36,13 @@ class LoadingScreen(Scene):
         sleep(0.25)
         self.loading.clear()
 
-    def update(self, dt: float):
+    def update(self):
         if not self.loading.is_set():
             scene_manager.switch_scene(MainMenu())
 
     def render(self):
         self.display.fill(BLACK_MOTION)
-        self.render_sprites()
+        self.sprites.render(self.display)
 
         if self.loadingStages > 0:
             pygame.draw.circle(self.display, DARK_BLACK_MOTION, (140, 101), 1)

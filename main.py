@@ -15,7 +15,7 @@ class Game:
     def run(self):
         while True:
             input.update()
-            scene_manager.update(time.dt)
+            scene_manager.update()
             scene_manager.render(window.screen)
             time.update()
             pygame.display.update()
