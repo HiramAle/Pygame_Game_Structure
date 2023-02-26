@@ -19,13 +19,15 @@ for y_coord in range(image.get_height()):
         points[y_coord][x_coord].coord = x_coord, y_coord
         points[y_coord][x_coord].color = image.get_at((x_coord, y_coord))
 
-print(points)
 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        if event.type == pygame.KEYDOWN:
+            print(event.key)
 
     for y_coord in range(image.get_height()):
         for x_coord in range(image.get_width()):

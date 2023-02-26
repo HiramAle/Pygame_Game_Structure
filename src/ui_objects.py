@@ -69,6 +69,11 @@ class Button(UIObject):
             self.set_status("up")
 
 
+class ArrowButton(Button):
+    def __init__(self, position: tuple, color="blue"):
+        super().__init__(position, "", color=color + "_arrow")
+
+
 class ToggleButton(Button):
     def __init__(self, position: tuple, text: str, color="blue_large"):
         super().__init__(position, text, color)

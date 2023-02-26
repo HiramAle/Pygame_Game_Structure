@@ -22,6 +22,8 @@ class Sprite(Position, Renderable):
         image = self._image.copy()
         if self.opacity != 255:
             image.set_alpha(self.opacity)
+        if any(self.flip):
+            image = pygame.transform.flip(image, self.flip[0], self.flip[1])
         if self.scale != 1:
             image = pygame.transform.scale_by(image, self.scale)
         return image

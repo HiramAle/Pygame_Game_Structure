@@ -8,6 +8,7 @@ class Renderable:
         self._image: pygame.Surface = pygame.Surface((16, 16))
         self.centered = True
         self.scale = 1
+        self.flip = [False, False]
 
 
 class Position:

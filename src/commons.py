@@ -20,5 +20,5 @@ def clip_surface(surface: pygame.Surface, clip_x, clip_y, clip_width, clip_heigh
 
 
 def sin_wave(value: int | float, distance: int, speed: int, time=1280) -> int:
-    time = pygame.time.get_ticks() / 2 % time
+    time = pygame.time.get_ticks() % time
     return int(value + math.sin(time / speed) * distance)

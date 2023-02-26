@@ -1,6 +1,6 @@
 import pygame
 from src.testing import input_test
-from src.config import Config
+from src.config import *
 
 
 class Game:
@@ -13,10 +13,10 @@ class Game:
     def run(self):
         while True:
             input_test.update()
-            self.window.fill(Config.RED_MOTION2)
+            self.window.fill(RED_MOTION2)
             self.clock.tick()
-            print(input_test.mouseButtons["left_hold"])
             pygame.display.update()
+
 
 
 if __name__ == '__main__':

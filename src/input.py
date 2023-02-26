@@ -1,4 +1,5 @@
 import pygame
+import src.window as Window
 from src.config import *
 
 mouseButtons = {}
@@ -8,8 +9,7 @@ mouseHover = False
 
 
 def init():
-    global mouseButtons
-    global keyboardKeys
+    global mouseButtons, keyboardKeys
 
     mouseButtons = {
         "left": False,
@@ -45,8 +45,8 @@ def update():
     global mousePosition, keyboardKeys, mouseButtons, mouseHover
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
-    mousePosition.x = int(mouse_x / WINDOW_WIDTH * CANVAS_WIDTH)
-    mousePosition.y = int(mouse_y / WINDOW_HEIGHT * CANVAS_HEIGHT)
+    mousePosition.x = int(mouse_x / Window.width * CANVAS_WIDTH)
+    mousePosition.y = int(mouse_y / Window.height * CANVAS_HEIGHT)
 
     soft_reset()
 

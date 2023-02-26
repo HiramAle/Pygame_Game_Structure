@@ -1,100 +1,142 @@
+"""
+bezier.py - Calculates a bezier curve from control points.
+
+2007 Victor Blomqvist
+Released to the Public Domain
+"""
 import pygame
+from pygame.locals import *
 
-# Define some colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
 
-# Define some constants for the screen size
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+class vec2d(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
-# Initialize Pygame
-pygame.init()
 
-# Set up the screen
-screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
-pygame.display.set_caption("Network Puzzle")
+gray = (100, 100, 100)
+lightgray = (200, 200, 200)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+X, Y, Z = 0, 1, 2
 
-# Set up the font
-font = pygame.font.SysFont('Calibri', 25, True, False)
 
-# Define some variables for the network
-subnets = [
-    {"name": "Subnet 1", "color": RED, "x": 100, "y": 100},
-    {"name": "Subnet 2", "color": GREEN, "x": 500, "y": 100},
-    {"name": "Subnet 3", "color": BLUE, "x": 300, "y": 400}
-]
+def compute_bezier_points(vertices, numPoints=None):
+    if numPoints is None:
+        numPoints = 30
+    if numPoints == 2 or len(vertices) != 4:
+        return None
 
-subnets = [
-    {"network": "192.168.1.0/24", "x": 100, "y": 100, "radius": 50, "color": BLUE, "name":"Subnet 1"},
-    {"network": "192.168.2.0/24", "x": 300, "y": 100, "radius": 50, "color": GREEN, "name":"Subnet 2"},
-    {"network": "192.168.3.0/24", "x": 200, "y": 300, "radius": 50, "color": RED, "name":"Subnet 3"}
-]
-routers = [
-    {"name": "Router 1", "color": BLACK, "x": 300, "y": 100, "routes": []},
-    {"name": "Router 2", "color": BLACK, "x": 300, "y": 300, "routes": []},
-    {"name": "Router 3", "color": BLACK, "x": 300, "y": 500, "routes": []}
-]
+    result = []
 
-# Define some variables for the game state
-selected_subnet = None
-selected_router = None
+    b0x = vertices[0][0]
+    b0y = vertices[0][1]
+    b1x = vertices[1][0]
+    b1y = vertices[1][1]
+    b2x = vertices[2][0]
+    b2y = vertices[2][1]
+    b3x = vertices[3][0]
+    b3y = vertices[3][1]
 
-# Define a function to draw the network
-def draw_network():
-    for subnet in subnets:
-        pygame.draw.rect(screen, subnet["color"], [subnet["x"], subnet["y"], 100, 100])
-        text = font.render(subnet["name"], True, WHITE)
-        screen.blit(text, [subnet["x"] + 10, subnet["y"] + 10])
-    for router in routers:
-        pygame.draw.circle(screen, router["color"], [router["x"], router["y"]], 50)
-        text = font.render(router["name"], True, WHITE)
-        screen.blit(text, [router["x"] - 35, router["y"] - 15])
-        for route in router["routes"]:
-            pygame.draw.line(screen, route["color"], [router["x"], router["y"]], [route["x"], route["y"]], 5)
+    # Compute polynomial coefficients from Bezier points
+    ax = -b0x + 3 * b1x + -3 * b2x + b3x
+    ay = -b0y + 3 * b1y + -3 * b2y + b3y
 
-# Define a function to update the router routes
-def update_router_routes():
-    for router in routers:
-        router["routes"] = {}
-        for subnet in subnets:
-            if subnet != selected_subnet:
-                distance = ((router["x"] - subnet["x"])**2 + (router["y"] - subnet["y"])**2)**0.5
-                if distance <= subnet["radius"]:
-                    router["routes"][subnet["network"]] = distance
-        if selected_subnet:
-            if selected_subnet["network"] not in router["routes"]:
-                router["routes"][selected_subnet["network"]] = float('inf')
+    bx = 3 * b0x + -6 * b1x + 3 * b2x
+    by = 3 * b0y + -6 * b1y + 3 * b2y
 
-running = True
-while running:
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            for subnet in subnets:
-                if subnet["x"] < pos[0] < subnet["x"] + 100 and subnet["y"] < pos[1] < subnet["y"] + 100:
-                    selected_subnet = subnet
-                    selected_router = None
-                    update_router_routes()
-            for router in routers:
-                if (router["x"] - pos[0]) ** 2 + (router["y"] - pos[1]) ** 2 < 50 ** 2:
-                    selected_router = router
-                    selected_subnet = None
+    cx = -3 * b0x + 3 * b1x
+    cy = -3 * b0y + 3 * b1y
 
-    # Update the game state
-    if selected_router:
-        selected_router["x"], selected_router["y"] = pygame.mouse.get_pos()
-        update_router_routes()
+    dx = b0x
+    dy = b0y
 
-    # Draw the network
-    screen.fill(WHITE)
-    draw_network()
-    pygame.display.flip()
+    # Set up the number of steps and step size
+    numSteps = numPoints - 1  # arbitrary choice
+    h = 1.0 / numSteps  # compute our step size
 
-pygame.quit()
+    # Compute forward differences from Bezier points and "h"
+    pointX = dx
+    pointY = dy
+
+    firstFDX = ax * (h * h * h) + bx * (h * h) + cx * h
+    firstFDY = ay * (h * h * h) + by * (h * h) + cy * h
+
+    secondFDX = 6 * ax * (h * h * h) + 2 * bx * (h * h)
+    secondFDY = 6 * ay * (h * h * h) + 2 * by * (h * h)
+
+    thirdFDX = 6 * ax * (h * h * h)
+    thirdFDY = 6 * ay * (h * h * h)
+
+    # Compute points at each step
+    result.append((int(pointX), int(pointY)))
+
+    for i in range(numSteps):
+        pointX += firstFDX
+        pointY += firstFDY
+
+        firstFDX += secondFDX
+        firstFDY += secondFDY
+
+        secondFDX += thirdFDX
+        secondFDY += thirdFDY
+
+        result.append((int(pointX), int(pointY)))
+
+    return result
+
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((1024, 768))
+
+    ### Control points that are later used to calculate the curve
+    control_points = [vec2d(100, 100), vec2d(150, 500), vec2d(450, 500), vec2d(500, 150)]
+
+    ### The currently selected point
+    selected = None
+
+    clock = pygame.time.Clock()
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type in (QUIT, KEYDOWN):
+                running = False
+            elif event.type == MOUSEBUTTONDOWN and event.button == 1:
+                for p in control_points:
+                    if abs(p.x - event.pos[X]) == 10 and abs(p.y - event.pos[Y]) == 10:
+                        selected = p
+            # elif event.type == MOUSEBUTTONDOWN and event.button == 3:
+            #     x,y = pygame.mouse.get_pos()
+            #     control_points.append(vec2d(x,y))
+            elif event.type == MOUSEBUTTONUP and event.button == 1:
+                selected = None
+
+        ### Draw stuff
+        screen.fill(gray)
+
+        if selected is not None:
+            selected.x, selected.y = pygame.mouse.get_pos()
+            pygame.draw.circle(screen, green, (selected.x, selected.y), 10)
+
+        ### Draw control points
+        for p in control_points:
+            pygame.draw.circle(screen, blue, (int(p.x), int(p.y)), 4)
+
+        ### Draw control "lines"
+        pygame.draw.lines(screen, lightgray, False, [(x.x, x.y) for x in control_points])
+
+        ### Draw bezier curve
+        b_points = compute_bezier_points([(x.x, x.y) for x in control_points])
+        pygame.draw.lines(screen, pygame.Color("red"), False, b_points, 2)
+
+        ### Flip screen
+        pygame.display.flip()
+        clock.tick(100)
+        # print clock.get_fps()
+
+
+if __name__ == '__main__':
+    main()

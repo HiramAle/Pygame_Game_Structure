@@ -60,7 +60,12 @@ BINDINGS = {
     "TAB": {
         "trigger": "press",
         "binding": 9
+    },
+    "ESC": {
+        "trigger": "press",
+        "binding": 27
     }
+
 }
 CABLES = ["PLAIN_GREEN",
           "STRIP_GREEN",
