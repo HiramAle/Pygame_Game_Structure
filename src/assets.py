@@ -9,6 +9,9 @@ effects: dict[str, pygame.Surface] = {}
 fonts: dict[str, dict[int, pygame.font.Font]] = {}
 buttons: dict[str, dict[str, pygame.Surface]] = {}
 misc: dict[str, pygame.Surface] = {}
+controllers: dict[str, pygame.Surface] = {}
+cables: dict[str, pygame.Surface] = {}
+subnetting: dict[str, pygame.Surface] = {}
 
 
 def preload() -> None:
@@ -18,10 +21,14 @@ def preload() -> None:
 
 
 def load() -> None:
-    global cursors, buttons, misc
+    global cursors, buttons, misc, controllers, cables, subnetting
     cursors = load_cursors(CURSORS_PATH)
     buttons = load_buttons(BUTTONS_PATH)
     misc = load_image_directory(MISC_PATH)
+    controllers = load_image_directory(CONTROLLERS_PATH)
+    cables = load_image_directory(CABLES_PATH)
+    subnetting = load_image_directory(SUBNETTING_PATH)
+
 # class Assets:
 #     buttons: dict[str, dict[str, pygame.Surface]] = {}
 #     misc: dict[str, pygame.Surface] = {}

@@ -6,6 +6,8 @@ mouseButtons = {}
 mousePosition = pygame.math.Vector2()
 keyboardKeys = {}
 mouseHover = False
+keyDown = False
+keyPressed = None
 
 
 def init():
@@ -27,7 +29,7 @@ def init():
 
 
 def soft_reset():
-    global keyboardKeys, mouseButtons
+    global keyboardKeys, mouseButtons, keyDown, keyPressed
 
     for action in BINDINGS:
         if BINDINGS[action]["trigger"] == 'press':
@@ -40,9 +42,15 @@ def soft_reset():
     mouseButtons['scroll_up'] = False
     mouseButtons['scroll_down'] = False
 
+    if keyDown:
+        keyDown = False
+
+    if keyPressed:
+        keyPressed = None
+
 
 def update():
-    global mousePosition, keyboardKeys, mouseButtons, mouseHover
+    global mousePosition, keyboardKeys, mouseButtons, mouseHover, keyDown, keyPressed
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
     mousePosition.x = int(mouse_x / Window.width * CANVAS_WIDTH)
@@ -51,11 +59,15 @@ def update():
     soft_reset()
 
     for event in pygame.event.get():
+        event: pygame.event.Event
+
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
 
         if event.type == pygame.KEYDOWN:
+            keyDown = True
+            keyPressed = event.unicode
             for binding in BINDINGS:
                 if event.key == BINDINGS[binding]["binding"]:
                     keyboardKeys[binding] = True

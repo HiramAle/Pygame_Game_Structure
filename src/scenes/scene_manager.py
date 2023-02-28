@@ -25,6 +25,11 @@ def switch_scene(new_scene: Scene) -> None:
     set_current_scene(new_scene)
 
 
+def swap_scene(from_scene: Scene, to_scene: Scene) -> None:
+    set_current_scene(to_scene)
+    stackScene.remove(from_scene)
+
+
 def transition_scene(from_scene: Scene, to_scene: Scene):
     set_current_scene(CircleTransition(from_scene, to_scene))
 
@@ -55,21 +60,22 @@ class CircleTransition(Transition):
         super().__init__("circle_transition", to_scene, from_scene)
         self.transitionSurface = from_scene.display.copy()
         self.transitionSurface.set_colorkey(WHITE_MOTION)
-        self.circlePosition = self.fromScene.playerPosition
+        self.circlePosition = self.fromScene.transitionPosition
         self.maxCircleRadius = 320
         self.circleRadius = self.maxCircleRadius
         self.transitioningIn = True
 
     def update(self):
+        self.update_cursor()
         if self.transitioningIn:
             self.circleRadius -= Time.dt * self.transitionSpeed
             if self.circleRadius <= 0:
                 self.transitioningIn = False
-                self.circlePosition = self.toScene.playerPosition
+                self.circlePosition = self.toScene.transitionPosition
         else:
             self.circleRadius += Time.dt * self.transitionSpeed
             if self.circleRadius >= self.maxCircleRadius:
-                switch_scene(self.toScene)
+                swap_scene(self, self.toScene)
 
     def render(self) -> None:
         if self.transitioningIn:

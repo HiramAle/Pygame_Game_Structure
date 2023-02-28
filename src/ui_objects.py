@@ -74,6 +74,11 @@ class ArrowButton(Button):
         super().__init__(position, "", color=color + "_arrow")
 
 
+class SquareButton(Button):
+    def __init__(self, position: tuple, button_type: str, color="blue"):
+        super().__init__(position, "", f"{color}_{button_type}")
+
+
 class ToggleButton(Button):
     def __init__(self, position: tuple, text: str, color="blue_large"):
         super().__init__(position, text, color)
@@ -106,3 +111,15 @@ class SimpleButton(UIObject):
         self.text.x = self.x + 1
         self.text.y = self.y - 1
         self.text.update()
+
+
+class ControlIndicator(UIObject):
+    def __init__(self, position: tuple, key: str, action: str):
+        super().__init__(position)
+        self.image = assets.controllers[key]
+        width = assets.fonts["monogram"][16].size(action)[0]
+        self.text = Text((self.x + width, self.y), action, WHITE_MOTION)
+
+    def render(self, display: pygame.Surface):
+        super().render(display)
+        self.text.render(display)

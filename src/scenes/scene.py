@@ -17,6 +17,10 @@ class Scene:
         self.display = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
         self.sprites = SpriteGroup()
         self._spriteGroups: list[SpriteGroup] = [self.sprites]
+        self.transitionPosition = 160, 90
+
+    def __repr__(self):
+        return self.name
 
     def update_cursor(self) -> None:
         interactive_sprites = []

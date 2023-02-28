@@ -35,6 +35,9 @@ FONTS_PATH = "data/text"
 SOUNDS_PATH = "data/audio"
 BUTTONS_PATH = "data/images/buttons"
 MISC_PATH = "data/images/misc"
+CONTROLLERS_PATH = "data/images/controllers"
+CABLES_PATH = "data/images/cables_scene"
+SUBNETTING_PATH = "data/images/subnetting_scene"
 # Input
 BINDINGS = {
     "UP": {
@@ -64,6 +67,10 @@ BINDINGS = {
     "ESC": {
         "trigger": "press",
         "binding": 27
+    },
+    "SPACE": {
+        "trigger": "press",
+        "binding": 32
     }
 
 }
@@ -75,5 +82,25 @@ CABLES = ["PLAIN_GREEN",
           "STRIP_BLUE",
           "PLAIN_BROWN",
           "STRIP_BROWN"]
+
+CABLES_568_A = ["STRIP_GREEN",
+                "PLAIN_GREEN",
+                "STRIP_ORANGE",
+                "PLAIN_BLUE",
+                "STRIP_BLUE",
+                "PLAIN_ORANGE",
+                "STRIP_BROWN",
+                "PLAIN_BROWN"]
+
+CABLES_568_B = ["STRIP_ORANGE",
+                "PLAIN_ORANGE",
+                "STRIP_GREEN",
+                "PLAIN_BLUE",
+                "STRIP_BLUE",
+                "PLAIN_GREEN",
+                "STRIP_BROWN",
+                "PLAIN_BROWN"]
+
+CABLE_STANDARDS = {"A": CABLES_568_A, "B": CABLES_568_B}
 
 MOUSE_HOVER_EVENT = pygame.USEREVENT + 1

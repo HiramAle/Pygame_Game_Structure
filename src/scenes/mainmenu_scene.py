@@ -1,16 +1,11 @@
-import pygame
-import src.assets as assets
 import src.input as input
 import src.scenes.scene_manager as scene_manager
 import src.window as Window
-from src.config import *
 from src.scenes.scene import Scene
-from src.modules.cable.cable_scene import CableScene
+from src.modules.cables.order_cable_scene import OrderCableScene
+from src.scenes.game_selector_scene import GameSelectorScene
 from src.commons import sin_wave
-from src.ui_objects import Image, Button, ToggleButton, ArrowButton, Text
-import os
-from src.sprite_group import SpriteGroup
-from src.time import dt
+from src.ui_objects import *
 
 
 class MainMenu(Scene):
@@ -18,6 +13,9 @@ class MainMenu(Scene):
         super().__init__("MainMenu")
         pygame.mouse.set_visible(True)
         self.stage = "main"
+        self.bottomBanner = pygame.Surface((320, 25))
+        self.bottomBanner.fill(DARK_BLACK_MOTION)
+        self.bottomBanner.set_alpha(120)
         # Main Menu
         self.logo = Image((160, 30), assets.misc["logo"])
         self.logo.scale = 2
@@ -33,6 +31,7 @@ class MainMenu(Scene):
         self.sizes = ["960x540", "1280x720", "1920x1080"]
         self.sizeIndex = 1
         self.optionsMenuGroup = self.new_group()
+        self.back = SquareButton((15, 15), "back")
         self.right = ArrowButton((210, 100))
         self.left = ArrowButton((110, 100))
         self.left.flip[0] = True
@@ -42,6 +41,7 @@ class MainMenu(Scene):
         self.optionsMenuGroup.add(self.left)
         self.optionsMenuGroup.add(self.size)
         self.optionsMenuGroup.add(self.apply)
+        self.optionsMenuGroup.add(self.back)
 
     def update(self):
         self.update_cursor()
@@ -49,7 +49,7 @@ class MainMenu(Scene):
         match self.stage:
             case "main":
                 if self.startButton.released():
-                    scene_manager.switch_scene(CableScene())
+                    scene_manager.switch_scene(GameSelectorScene())
                 if self.optionsButton.released():
                     self.stage = "options"
                     self.mainMenuGroup.active = False
@@ -71,6 +71,11 @@ class MainMenu(Scene):
                         self.sizeIndex = len(self.sizes) - 1
                     self.size.set_text(self.sizes[self.sizeIndex])
 
+                if self.back.released():
+                    self.stage = "main"
+                    self.mainMenuGroup.active = True
+                    self.optionsMenuGroup.active = False
+
                 self.optionsMenuGroup.update()
 
                 if self.apply.released():
@@ -87,7 +92,6 @@ class MainMenu(Scene):
     def render(self):
         self.display.fill(YELLOW_MOTION)
         self.display.blit(assets.effects["crt"], (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-
         match self.stage:
             case "main":
                 self.mainMenuGroup.render(self.display)
