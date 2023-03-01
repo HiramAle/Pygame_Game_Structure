@@ -37,6 +37,7 @@ class Option(Sprite):
         self.shadow = self.image.copy()
         pygame.draw.rect(self.shadow, BLACK_MOTION, pygame.Rect(0, 0, 24, 10), border_radius=3)
         self.shadow.set_alpha(100)
+        self.dragging = False
 
     def update(self):
         self.text.position = self.x, self.y - 1
@@ -45,5 +46,15 @@ class Option(Sprite):
     def render(self, display: pygame.Surface):
         if self.shadowActive:
             display.blit(self.shadow, self.shadow.get_rect(center=(self.x - 1, self.y + 1)))
+        if self.dragging:
+            mask = pygame.mask.from_surface(self.image)
+            surface = mask.to_surface(setcolor=WHITE_MOTION, unsetcolor=(0, 0, 0))
+            surface.set_colorkey((0, 0, 0))
+            rect = surface.get_rect(center=self.position)
+            display.blit(surface, (rect.left + 1, rect.top))
+            display.blit(surface, (rect.left - 1, rect.top))
+            display.blit(surface, (rect.left, rect.top + 1))
+            display.blit(surface, (rect.left, rect.top - 1))
         super().render(display)
+
         self.text.render(display)

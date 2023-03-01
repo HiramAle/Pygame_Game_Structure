@@ -31,45 +31,49 @@ class SelectAreaScene(Scene):
         self.instruction = Text((160, 20), "Select the area for subnet", WHITE_MOTION)
 
         # Drag and Drop
-        self.subnets = Text((10 + 200 / 3, 90), "Subnets", WHITE_MOTION)
+        self.subnets = Text((18, 110), "Subnets: __", WHITE_MOTION)
+        self.subnets.centered = False
+        self.hosts = Text((100, 110), "Hosts: __", WHITE_MOTION)
+        self.hosts.centered = False
 
-        self.hosts = Text((10 + 200 / 3 * 2, 90), "Hosts", WHITE_MOTION)
-
-        self.mask = Text((20, 110), "Mask", WHITE_MOTION)
+        self.mask = Text((18, 95), "Mask", WHITE_MOTION)
         self.mask.centered = False
-        self.maskIP = Text((100, 110), "255.255.255.", WHITE_MOTION)
+        self.maskIP = Text((88, 95), "255.255.255.", WHITE_MOTION)
         self.maskIP.centered = False
-        self.maskBlank = Blank((180, 118), "mask")
+        self.maskBlank = Blank((180, self.mask.rect.centery), "mask")
 
-        self.network = Text((20, 110), "Network", WHITE_MOTION)
+        self.network = Text((18, 125), "Network", WHITE_MOTION)
         self.network.centered = False
-        self.networkIp = Text((100, 110), "192.160.1.", WHITE_MOTION)
+        self.networkIp = Text((100, 125), "192.160.1.", WHITE_MOTION)
         self.networkIp.centered = False
-        self.networkBlank = Blank((180, 118), "network")
+        self.networkBlank = Blank((180, self.network.rect.centery), "network")
 
-        self.broadcast = Text((20, 125), "Broadcast", WHITE_MOTION)
+        self.broadcast = Text((18, 140), "Broadcast", WHITE_MOTION)
         self.broadcast.centered = False
-        self.broadcastIp = Text((100, 125), "192.160.2.", WHITE_MOTION)
+        self.broadcastIp = Text((100, 140), "192.160.2.", WHITE_MOTION)
         self.broadcastIp.centered = False
-        self.broadcastBlank = Blank((180, 133), "broadcast")
+        self.broadcastBlank = Blank((180, self.broadcast.rect.centery), "broadcast")
 
-        self.gateAway = Text((20, 140), "Gateaway", WHITE_MOTION)
+        self.gateAway = Text((18, 155), "Gateaway", WHITE_MOTION)
         self.gateAway.centered = False
-        self.gateAwayIp = Text((100, 140), "192.160.3.", WHITE_MOTION)
+        self.gateAwayIp = Text((100, 155), "192.160.3.", WHITE_MOTION)
         self.gateAwayIp.centered = False
-        self.gateAwayBlank = Blank((180, 148), "Gateaway")
+        self.gateAwayBlank = Blank((180, self.gateAway.rect.centery), "Gateaway")
 
-        self.emptyBlank1 = Blank((220 - 5 + 90 / 4, 100), "empty1", True)
-        self.emptyBlank2 = Blank((220 - 5 + 90 / 4, 115), "empty2", True)
-        self.emptyBlank3 = Blank((220 - 5 + 90 / 4, 130), "empty3", True)
-        self.emptyBlank4 = Blank((220 + 90 / 4 * 2, 100), "empty4", True)
-        self.emptyBlank5 = Blank((220 + 90 / 4 * 2, 115), "empty5", True)
-        self.emptyBlank6 = Blank((220 + 90 / 4 * 2, 130), "empty6", True)
-        self.emptyBlank7 = Blank((220 + 6 + 90 / 4 * 3, 100), "empty7", True)
-        self.emptyBlank8 = Blank((220 + 6 + 90 / 4 * 3, 115), "empty8", True)
-        self.emptyBlank9 = Blank((220 + 6 + 90 / 4 * 3, 130), "empty9", True)
+        self.emptyBlank1 = Blank((220 - 5 + 90 / 4, 130), "empty1", True)
+        self.emptyBlank2 = Blank((220 - 5 + 90 / 4, 145), "empty2", True)
+        self.emptyBlank3 = Blank((220 - 5 + 90 / 4, 160), "empty3", True)
+        self.emptyBlank4 = Blank((220 + 90 / 4 * 2, 130), "empty4", True)
+        self.emptyBlank5 = Blank((220 + 90 / 4 * 2, 145), "empty5", True)
+        self.emptyBlank6 = Blank((220 + 90 / 4 * 2, 160), "empty6", True)
+        self.emptyBlank7 = Blank((220 + 6 + 90 / 4 * 3, 130), "empty7", True)
+        self.emptyBlank8 = Blank((220 + 6 + 90 / 4 * 3, 145), "empty8", True)
+        self.emptyBlank9 = Blank((220 + 6 + 90 / 4 * 3, 160), "empty9", True)
+
+        self.emptyBlank10 = Blank((220 - 5 + 90 / 4, 115), "empty10", True)
 
         self.blankGroup = self.new_group()
+        self.blankGroup.add(self.maskBlank)
         self.blankGroup.add(self.networkBlank)
         self.blankGroup.add(self.broadcastBlank)
         self.blankGroup.add(self.gateAwayBlank)
@@ -82,6 +86,7 @@ class SelectAreaScene(Scene):
         self.blankGroup.add(self.emptyBlank7)
         self.blankGroup.add(self.emptyBlank8)
         self.blankGroup.add(self.emptyBlank9)
+        self.blankGroup.add(self.emptyBlank10)
 
         self.optionsGroup = self.new_group()
         self.option1 = Option(192, self.emptyBlank1)
@@ -128,8 +133,7 @@ class SelectAreaScene(Scene):
         self.draggableGroup.add(self.hosts)
         self.draggableGroup.add(self.subnets)
         self.itemDragging = None
-        self.draggingPosition = ""
-        self.positionText = Text((35, 5), self.draggingPosition, WHITE_MOTION)
+        self.positionText = Text((35, 5), "", WHITE_MOTION)
         self.zonesGroup.add(self.positionText)
 
         self.dragging = False
@@ -139,6 +143,9 @@ class SelectAreaScene(Scene):
         self.selectedOption: Option = None
         self.selectedBlank: Blank = None
         self.oldPosition = 0, 0
+
+        self.blankGroup.active = False
+        self.optionsGroup.active = False
 
     def update(self) -> None:
         self.update_cursor()
@@ -153,6 +160,8 @@ class SelectAreaScene(Scene):
         if self.zone1.clicked():
             self.subnets.set_text(f"Subnets: {2}")
             self.hosts.set_text(f"Hosts: {4}")
+            self.blankGroup.active = True
+            self.optionsGroup.active = True
 
         if input.keyboardKeys["SPACE"]:
             # for blank in self.blankGroup.sprites:
@@ -160,16 +169,18 @@ class SelectAreaScene(Scene):
             #     if not blank.empty and not blank.default:
             #         option = next((option for option in self.optionsGroup.sprites if option.blank == blank))
             #         print(option.blank.name, option.number)
-            for sprite in self.draggableGroup.sprites:
-                if hasattr(sprite, "name"):
-                    print(sprite.name, sprite.position)
-                else:
-                    print(sprite.text, sprite.position)
+            # for sprite in self.draggableGroup.sprites:
+            #     if hasattr(sprite, "name"):
+            #         print(sprite.name, sprite.position)
+            #     else:
+            #         print(sprite.text, sprite.position)
+            print("hosts", self.hosts.rect.topleft)
+            print("subnets", self.subnets.rect.topleft)
 
     def render(self) -> None:
         self.display.fill(BLUE_MOTION2)
-        pygame.draw.rect(self.display, GRAY_MOTION, pygame.Rect(10, 80, 200, 90), border_radius=3)
-        pygame.draw.rect(self.display, GRAY_MOTION, pygame.Rect(220, 80, 90, 90), border_radius=3)
+        pygame.draw.rect(self.display, GRAY_MOTION, pygame.Rect(10, 95, 200, 75), border_radius=3)
+        pygame.draw.rect(self.display, GRAY_MOTION, pygame.Rect(220, 105, 90, 65), border_radius=3)
         self.zonesGroup.render(self.display)
         self.blankGroup.render(self.display)
         self.optionsGroup.render(self.display)
@@ -211,6 +222,7 @@ class SelectAreaScene(Scene):
                     self.mouseOffsetX = input.mousePosition.x - option.x
                     self.mouseOffsetY = input.mousePosition.y - option.y
                     self.oldPosition = option.x, option.y
+                    self.selectedOption.dragging = True
                     break
 
         # On dragging
@@ -239,5 +251,6 @@ class SelectAreaScene(Scene):
                 self.selectedBlank.empty = False
 
             self.selectedOption.shadowActive = True
+            self.selectedOption.dragging = False
             self.selectedOption = None
             self.dragging = False
