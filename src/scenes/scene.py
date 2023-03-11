@@ -3,8 +3,7 @@ import pygame
 import src.input as input
 import src.assets as assets
 from src.config import *
-from src.sprite import Sprite
-from src.sprite_group import SpriteGroup
+from src.sprite import Sprite, SpriteGroup
 
 
 class Scene:
@@ -25,8 +24,7 @@ class Scene:
     def update_cursor(self) -> None:
         interactive_sprites = []
         for group in self._spriteGroups:
-            if group.active:
-                interactive_sprites += group.get_interactive_sprites()
+            interactive_sprites += group.get_interactive_sprites()
 
         if any(sprite.pressed() for sprite in interactive_sprites):
             pygame.mouse.set_cursor(assets.cursors["grab"])

@@ -13,10 +13,16 @@ class Blank(Sprite):
         self._image.set_colorkey((0, 0, 0))
         self.default = default_blank
         if default_blank:
-            pygame.draw.rect(self._image, GREEN_MOTION, pygame.Rect(0, 0, 26, 12), border_radius=3, width=1)
+            pygame.draw.rect(self._image, DARK_BLACK_MOTION, pygame.Rect(0, 0, 26, 12), border_radius=3, width=1)
             self.empty = False
         else:
-            pygame.draw.rect(self._image, GREEN_MOTION, pygame.Rect(0, 0, 26, 12), border_radius=3)
+            pygame.draw.rect(self._image, WHITE_MOTION, pygame.Rect(0, 0, 26, 12), border_radius=3)
+            surface = self.image.copy()
+            surface.fill((0, 0, 0))
+            surface.set_colorkey((0, 0, 0))
+            pygame.draw.rect(surface, GRAY_MOTION, pygame.Rect(1, 1, 24, 10), border_radius=3)
+            surface.set_alpha(100)
+            self._image.blit(surface, (0, 0))
             self.empty = True
 
     def __repr__(self):
@@ -30,7 +36,7 @@ class Option(Sprite):
         self.number = str(number)
         self.image = pygame.Surface((24, 10))
         self._image.set_colorkey((0, 0, 0))
-        pygame.draw.rect(self._image, YELLOW_MOTION, pygame.Rect(0, 0, 24, 10), border_radius=3)
+        pygame.draw.rect(self._image, RED_MOTION2, pygame.Rect(0, 0, 24, 10), border_radius=3)
         self.text = Text((self.x, self.y - 1), self.number, WHITE_MOTION)
         self.interactive = True
         self.shadowActive = True
@@ -47,14 +53,22 @@ class Option(Sprite):
         if self.shadowActive:
             display.blit(self.shadow, self.shadow.get_rect(center=(self.x - 1, self.y + 1)))
         if self.dragging:
-            mask = pygame.mask.from_surface(self.image)
-            surface = mask.to_surface(setcolor=WHITE_MOTION, unsetcolor=(0, 0, 0))
-            surface.set_colorkey((0, 0, 0))
-            rect = surface.get_rect(center=self.position)
-            display.blit(surface, (rect.left + 1, rect.top))
-            display.blit(surface, (rect.left - 1, rect.top))
-            display.blit(surface, (rect.left, rect.top + 1))
-            display.blit(surface, (rect.left, rect.top - 1))
+            self.draw_outline(display)
         super().render(display)
 
         self.text.render(display)
+
+
+class Zone(Sprite):
+    def __init__(self, position: tuple, image: pygame.Surface, name: str):
+        super().__init__(position)
+        self.image = image
+        self.name = name
+        self.selected = False
+        self.scale = 2
+        self.interactive = True
+
+    def render(self, display: pygame.Surface):
+        if self.selected:
+            self.draw_outline(display)
+        super().render(display)

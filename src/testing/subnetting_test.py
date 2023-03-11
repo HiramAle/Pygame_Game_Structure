@@ -17,7 +17,7 @@ class InputBox(UIObject):
         self.width = width
         self.image = pygame.Surface((width, 16))
         self._image.fill(GREEN_MOTION)
-        self.font = pygame.font.Font("../../data/text/monogram.ttf", 16)
+        self.font = pygame.font.Font("../../data/gui/fonts/monogram.ttf", 16)
         self.text = text
         self.textSurface = self.font.render(self.text, False, WHITE_MOTION)
         self.active = False

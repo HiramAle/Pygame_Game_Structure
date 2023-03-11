@@ -111,7 +111,7 @@ class OrderCableScene(Scene):
         #     print(self.cableCoverBackground.x, self.cableCoverBackground.y)
 
     def render(self):
-        self.display.fill(GREEN_MOTION)
+        self.display.blit(assets.backgrounds["table"], (0, 0))
         self.display.blit(assets.effects["crt"], (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
         if self.dragging:
             self.selectedCable.render(self.display)
@@ -125,5 +125,3 @@ class OrderCableScene(Scene):
         self.buttonGroup.render(self.display)
 
         self.instructionsGroup.render(self.display)
-
-        # pygame.draw.rect(self.display, "#227997", pygame.Rect(0, 5, 120, 170), border_radius=3)

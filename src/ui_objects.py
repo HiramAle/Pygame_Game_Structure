@@ -1,51 +1,64 @@
+import pygame
 import src.assets as assets
 from src.components import *
 from src.config import *
-from src.sprite import Sprite
+from src.sprite import Sprite, SpriteGroup
+
+button_colors: list[str] = ["BLUE"]
 
 
-class UIObject(Sprite):
-    def __init__(self, position=(0, 0), image=pygame.Surface((16, 16))):
-        super().__init__(position, image)
+class GUISprite(Sprite):
+    def __init__(self, name: str, position: tuple, image=pygame.Surface((16, 16)), *groups: SpriteGroup):
+        super().__init__(name, position, image, *groups)
 
 
-class Text(UIObject):
-    def __init__(self, position: tuple, text: str, color: str, size=16, shadow=True, shadow_color=DARK_BLACK_MOTION):
-        super().__init__(position)
-        self.text = text
-        self.color = color
-        self.size = size
+class GUIText(GUISprite):
+    def __init__(self, position: tuple, text: str, size=16, color=WHITE_MOTION, shadow=True, wrap_length=0,
+                 *groups: SpriteGroup):
+        super().__init__("text", position, pygame.Surface((16, 16)), *groups)
+        self._text = text
+        self._size = size
+        self._color = color
+        self._shadowColor = DARK_BLACK_MOTION
+        self.wrapLength = wrap_length
+        self.shadowPadding = (size // 16) * 1.25
         self.shadow = shadow
-        self.shadowColor = shadow_color
-        self.textImage = assets.fonts["monogram"][16].render(text, False, color)
-        self.shadowImage = assets.fonts["monogram"][16].render(text, False, shadow_color)
-        self.image = pygame.Surface((self.textImage.get_width(), self.textImage.get_height() + 1))
-        self._image.set_colorkey((0, 0, 0))
-        if shadow:
-            self._image.blit(self.shadowImage, (0, 1))
-        self._image.blit(self.textImage, (0, 0))
+        self.text = text
 
-    def set_text(self, text: str):
-        self.textImage = assets.fonts["monogram"][16].render(text, False, self.color)
-        self.shadowImage = assets.fonts["monogram"][16].render(text, False, self.shadowColor)
-        self.image = pygame.Surface((self.textImage.get_width(), self.textImage.get_height() + 1))
-        self._image.set_colorkey((0, 0, 0))
+    def set_text_color(self, value):
+        self._color = value
+        self.text = self._text
+
+    @property
+    def text(self) -> str:
+        return self._text
+
+    @text.setter
+    def text(self, value: str) -> None:
+        self._text = value
+        self.textSurface = assets.fonts["monogram"][self._size].render(self._text, False, self._color, self.wrapLength)
+        self.shadowSurface = assets.fonts["monogram"][self._size].render(self._text, False, self._shadowColor,
+                                                                         self.wrapLength)
+        self.textSurface.set_colorkey((0, 0, 0))
+        self.shadowSurface.set_colorkey((0, 0, 0))
+        self.image = pygame.Surface(
+            (self.textSurface.get_width(), self.shadowSurface.get_height() + self.shadowPadding))
         if self.shadow:
-            self._image.blit(self.shadowImage, (0, 1))
-        self._image.blit(self.textImage, (0, 0))
+            self.image.blit(self.shadowSurface, (0, self.shadowPadding))
+        self.image.blit(self.textSurface, (0, 0))
+        self.image.set_colorkey((0, 0, 0))
 
 
-class Image(UIObject):
-    def __init__(self, position: tuple, image: pygame.Surface):
-        super().__init__(position, image)
+class GUIImage(GUISprite):
+    def __init__(self, position: tuple, image: pygame.Surface, *groups: SpriteGroup):
+        super().__init__("image", position, image, *groups)
 
 
-class Button(UIObject):
-    def __init__(self, position: tuple, text: str, color="blue_large"):
-        super().__init__(position)
+class Button(GUISprite):
+    def __init__(self, position: tuple, text: str, color: str):
+        super().__init__("button", position)
         self.color = color
-        self.text = Text((self.x, self.y - 2), text, WHITE_MOTION)
-        self.interactive = True
+        self.text = GUIText((self.x + 0.5, self.y - 2), text, WHITE_MOTION)
         self.status = "up"
         self.image = assets.buttons[self.color][self.status]
 
@@ -67,59 +80,3 @@ class Button(UIObject):
             self.set_status("down")
         else:
             self.set_status("up")
-
-
-class ArrowButton(Button):
-    def __init__(self, position: tuple, color="blue"):
-        super().__init__(position, "", color=color + "_arrow")
-
-
-class SquareButton(Button):
-    def __init__(self, position: tuple, button_type: str, color="blue"):
-        super().__init__(position, "", f"{color}_{button_type}")
-
-
-class ToggleButton(Button):
-    def __init__(self, position: tuple, text: str, color="blue_large"):
-        super().__init__(position, text, color)
-
-    def update(self):
-        if self.clicked():
-            if self.status == "up":
-                self.set_status("down")
-                self.text.set_text("Off")
-            else:
-                self.set_status("up")
-                self.text.set_text("On")
-
-
-class SimpleButton(UIObject):
-    def __init__(self, position: tuple, text: str):
-        super().__init__(position)
-        self.text = Text((self.x, self.y - 2), text, WHITE_MOTION)
-        self.image = pygame.Surface((self.text.rect.width + 3, self.text.rect.height))
-        self._image.set_colorkey((0, 0, 0))
-        self.interactive = True
-
-    def render(self, display: pygame.Surface):
-        super().render(display)
-        pygame.draw.rect(display, RED_MOTION2, self.rect, border_radius=3)
-        self.text.render(display)
-
-    def update(self):
-        super().update()
-        self.text.x = self.x + 1
-        self.text.y = self.y - 1
-        self.text.update()
-
-
-class ControlIndicator(UIObject):
-    def __init__(self, position: tuple, key: str, action: str):
-        super().__init__(position)
-        self.image = assets.controllers[key]
-        width = assets.fonts["monogram"][16].size(action)[0]
-        self.text = Text((self.x + width, self.y), action, WHITE_MOTION)
-
-    def render(self, display: pygame.Surface):
-        super().render(display)
-        self.text.render(display)

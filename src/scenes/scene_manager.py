@@ -64,6 +64,7 @@ class CircleTransition(Transition):
         self.maxCircleRadius = 320
         self.circleRadius = self.maxCircleRadius
         self.transitioningIn = True
+        pygame.mouse.set_visible(False)
 
     def update(self):
         self.update_cursor()
@@ -76,6 +77,7 @@ class CircleTransition(Transition):
             self.circleRadius += Time.dt * self.transitionSpeed
             if self.circleRadius >= self.maxCircleRadius:
                 swap_scene(self, self.toScene)
+                pygame.mouse.set_visible(True)
 
     def render(self) -> None:
         if self.transitioningIn:

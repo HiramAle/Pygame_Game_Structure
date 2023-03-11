@@ -69,7 +69,7 @@ class CrimpCableScene(Scene):
                 scene_manager.exit_scene()
 
     def render(self) -> None:
-        self.display.fill(GREEN_MOTION)
+        self.display.blit(assets.backgrounds["table"], (0, 0))
         self.display.blit(assets.effects["crt"], (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
         self.crimpGroup.render(self.display)
         self.cablePopUpGroup.render(self.display)

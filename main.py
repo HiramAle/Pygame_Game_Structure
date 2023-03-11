@@ -4,6 +4,7 @@ import src.window as window
 import src.time as time
 import src.scenes.scene_manager as scene_manager
 from src.scenes.loading_scene import LoadingScreen
+from src.modules.subnetting.subnetting_creator import *
 
 
 class Game:
@@ -22,4 +23,5 @@ class Game:
 
 
 if __name__ == '__main__':
+    # generate_json_exercise()
     Game().run()

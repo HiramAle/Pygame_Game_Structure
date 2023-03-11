@@ -11,7 +11,7 @@ def update():
 
 
 class Timer:
-    def __init__(self, duration_seconds: int):
+    def __init__(self, duration_seconds: int | float):
         self.startingTime = pygame.time.get_ticks()
         self.duration = duration_seconds * 1000
         self.done = False

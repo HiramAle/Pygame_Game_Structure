@@ -5,9 +5,34 @@ import math
 from threading import Event, Thread
 from src.config import *
 from src.scenes.scene import Scene
-from src.ui_objects import Text
+from src.sprite import Sprite, SpriteGroup
+from src.ui_objects import GUIText
 from time import sleep
 from src.scenes.mainmenu_scene import MainMenu
+
+
+class Circle(Sprite):
+    def __init__(self):
+        image = pygame.Surface((180, 180))
+        image.set_colorkey((0, 0, 0))
+        pygame.draw.circle(image, GREEN_MOTION, (90, 90), 90)
+        super().__init__("circle", (440, 180), image)
+        self.rotationPosition = self.x, self.y
+
+    def update(self):
+        self.x = int(self.rotationPosition[0] + (8 * math.cos(pygame.time.get_ticks() / 500)))
+        self.y = int(self.rotationPosition[1] + (8 * math.sin(pygame.time.get_ticks() / 500)))
+
+
+class Point(Sprite):
+    def __init__(self, position: tuple, *groups: SpriteGroup):
+        diameter = 6
+        radius = diameter / 2
+        image = pygame.Surface((diameter, diameter + 1))
+        image.set_colorkey((0, 0, 0))
+        pygame.draw.circle(image, DARK_BLACK_MOTION, (radius, radius + 1), radius)
+        pygame.draw.circle(image, WHITE_MOTION, (radius, radius), radius)
+        super().__init__("point", position, image, *groups)
 
 
 class LoadingScreen(Scene):
@@ -22,12 +47,16 @@ class LoadingScreen(Scene):
         assets.preload()
         self.loadingStages = 0
         Thread(name="Loading", target=self.load).start()
-        self.sprites = self.new_group()
-        self.sprites.add(Text((50, 120), "LOADING", WHITE_MOTION, 32))
+        GUIText((200, 180), "LOADING", 48, WHITE_MOTION, True, 0, self.sprites)
         self.veilSurface = self.display.copy()
         self.veilSurface.set_colorkey(GREEN_MOTION)
-        self.circlePosition = [160, 90]
-        self.defaultCircle = (200, 90)
+        self.circle = Circle()
+        self.point1 = Point((160, 220), self.sprites)
+        self.point1.disable()
+        self.point2 = Point((200, 220), self.sprites)
+        self.point2.disable()
+        self.point3 = Point((240, 220), self.sprites)
+        self.point3.disable()
 
     def load(self):
         self.loading.set()
@@ -42,9 +71,7 @@ class LoadingScreen(Scene):
         self.loading.clear()
 
     def update(self):
-        self.circlePosition[0] = int(self.defaultCircle[0] + (8 * math.cos(pygame.time.get_ticks() / 500)))
-        self.circlePosition[1] = int(self.defaultCircle[1] + (8 * math.sin(pygame.time.get_ticks() / 500)))
-
+        self.circle.update()
         if not self.loading.is_set():
             scene_manager.swap_scene(self, MainMenu())
 
@@ -54,18 +81,14 @@ class LoadingScreen(Scene):
         self.sprites.render(self.veilSurface)
 
         if self.loadingStages > 0:
-            pygame.draw.circle(self.veilSurface, DARK_BLACK_MOTION, (80, 121), 1)
-            pygame.draw.circle(self.veilSurface, WHITE_MOTION, (80, 120), 1)
-
+            self.point1.enable()
         if self.loadingStages > 1:
-            pygame.draw.circle(self.veilSurface, DARK_BLACK_MOTION, (90, 121), 1)
-            pygame.draw.circle(self.veilSurface, WHITE_MOTION, (90, 120), 1)
-
+            self.point2.enable()
         if self.loadingStages > 2:
-            pygame.draw.circle(self.veilSurface, DARK_BLACK_MOTION, (100, 121), 1)
-            pygame.draw.circle(self.veilSurface, WHITE_MOTION, (100, 120), 1)
+            self.point3.enable()
 
-        pygame.draw.circle(self.veilSurface, GREEN_MOTION, self.circlePosition, 50)
+        self.circle.render(self.veilSurface)
+
         self.display.blit(self.veilSurface, (0, 0))
 
         self.display.blit(assets.effects["crt"], (0, 0), special_flags=pygame.BLEND_RGBA_MULT)

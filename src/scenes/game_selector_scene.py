@@ -5,6 +5,7 @@ from src.scenes.scene import Scene
 from src.ui_objects import *
 from src.modules.cables.order_cable_scene import OrderCableScene
 from src.modules.subnetting.select_area_scene import SelectAreaScene
+from src.modules.subnetting.ip_mask_scene import IpMaskScene
 
 
 class GameSelectorScene(Scene):
@@ -39,12 +40,16 @@ class GameSelectorScene(Scene):
             scene_manager.exit_scene()
 
         if self.cablesIcon.clicked():
-            self.transitionPosition = self.cablesIcon.position
+            self.transitionPosition = self.cablesIcon._position
             scene_manager.transition_scene(self, OrderCableScene())
 
         if self.subnettingIcon.clicked():
-            self.transitionPosition = self.subnettingIcon.position
+            self.transitionPosition = self.subnettingIcon._position
             scene_manager.transition_scene(self, SelectAreaScene())
+
+        if self.routingIcon.clicked():
+            self.transitionPosition = self.routingIcon._position
+            scene_manager.transition_scene(self, TextScene())
 
     def render(self) -> None:
         self.display.fill(YELLOW_MOTION)

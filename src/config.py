@@ -1,13 +1,14 @@
 import pygame.cursors
+from os.path import dirname, join
 
 # Screen
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
+WINDOW_WIDTH = 1920
+WINDOW_HEIGHT = 1080
 CAPTION = "Structure"
 # Canvas
-CANVAS_WIDTH = 320
-CANVAS_HEIGHT = 180
-FONT_SIZES = [16, 32]
+CANVAS_WIDTH = 640
+CANVAS_HEIGHT = 360
+FONT_SIZES = [16, 32, 48, 64]
 # Colors
 BACKGROUND_COLOR = "#1E1E1E"
 WHITE = "#E2E2E2"
@@ -31,13 +32,16 @@ RED_MOTION2 = "#de5451"
 # Paths
 CURSORS_PATH = "data/images/cursors"
 EFFECTS_PATH = "data/images/effects"
-FONTS_PATH = "data/text"
+FONTS_PATH = "data/gui/fonts"
 SOUNDS_PATH = "data/audio"
 BUTTONS_PATH = "data/images/buttons"
 MISC_PATH = "data/images/misc"
 CONTROLLERS_PATH = "data/images/controllers"
 CABLES_PATH = "data/images/cables_scene"
 SUBNETTING_PATH = "data/images/subnetting_scene"
+BACKGROUNDS_PATH = "data/images/backgrounds"
+PROJECT_PATH = dirname(dirname(__file__))
+SUBNETTING_EXERCISES_PATH = "data/scenes/subnetting"
 # Input
 BINDINGS = {
     "UP": {
