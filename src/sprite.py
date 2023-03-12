@@ -47,9 +47,16 @@ class Sprite(Position, Renderable):
     def update(self):
         ...
 
-    def render(self, display: pygame.Surface):
+    def render(self, display: pygame.Surface, **kwargs):
         if self.isEnabled:
-            display.blit(self.image, self.rect)
+            blend_mode = None
+            for key, item in kwargs.items():
+                if key == "blend":
+                    blend_mode = item
+            if blend_mode:
+                display.blit(self.image, self.rect, special_flags=blend_mode)
+            else:
+                display.blit(self.image, self.rect)
 
     def hovered(self) -> bool:
         if not self.isEnabled or not self.interactive:
@@ -95,6 +102,7 @@ class Sprite(Position, Renderable):
 class SpriteGroup:
     def __init__(self):
         self._sprites: list[Sprite] = []
+        self.isEnabled = True
 
     def __repr__(self):
         return ','.join([sprite.__repr__() for sprite in self.sprites])
@@ -112,12 +120,28 @@ class SpriteGroup:
             self._sprites.remove(sprite)
 
     def render(self, display: pygame.Surface):
+        if not self.isEnabled:
+            return
         for sprite in self.sprites:
             sprite.render(display)
 
     def update(self):
+        if not self.isEnabled:
+            return
         for sprite in self.sprites:
             sprite.update()
 
     def get_interactive_sprites(self) -> list[Sprite]:
         return [sprite for sprite in self.sprites if sprite.interactive]
+
+    def disable(self):
+        if self.isEnabled:
+            self.isEnabled = False
+            for sprite in self._sprites:
+                sprite.disable()
+
+    def enable(self):
+        if not self.isEnabled:
+            self.isEnabled = True
+            for sprite in self._sprites:
+                sprite.enable()

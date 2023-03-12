@@ -62,7 +62,7 @@ class Button(GUISprite):
         self.status = "up"
         self.image = assets.buttons[self.color][self.status]
 
-    def render(self, display: pygame.Surface):
+    def render(self, display: pygame.Surface, **kwargs):
         super().render(display)
         self.text.render(display)
 
@@ -80,3 +80,91 @@ class Button(GUISprite):
             self.set_status("down")
         else:
             self.set_status("up")
+
+
+class Option(Sprite):
+    def __init__(self, option: str, position: tuple, *groups: SpriteGroup):
+        super().__init__(f"option_{option}", position, pygame.Surface((310, 30)), *groups)
+        self.image.fill(BLACK_MOTION)
+        self.set_centered(False)
+        self.interactive = True
+        self.text = GUIText(self.rect.center, option, 32, BLUE_MOTION2, False, 0, *groups)
+        self.text.interactive = True
+        self.updateAll = False
+
+    def update(self):
+        if self.hovered():
+            self.image.fill(WHITE_MOTION)
+            self.text.set_text_color(BLACK_MOTION)
+            if not self.updateAll:
+                self.updateAll = True
+        elif self.updateAll:
+            self.image.fill(BLACK_MOTION)
+            self.text.set_text_color(BLUE_MOTION2)
+
+    def disable(self):
+        super().disable()
+        self.text.disable()
+
+    def enable(self):
+        super().enable()
+        self.text.enable()
+
+    def render(self, display: pygame.Surface, **kwargs):
+        super().render(display)
+        if self.isEnabled:
+            self.text.render(display)
+
+
+class ArrowButton(Sprite):
+    def __init__(self, position: tuple, direction: str, *groups: SpriteGroup):
+        super().__init__(f"arrowButton_{direction}", position, assets.misc["arrow_button"], *groups)
+        self.interactive = True
+        if direction == "right":
+            self.flip(True, False)
+        self.normalImage = self.image.copy()
+        mask = pygame.mask.from_surface(self.image)
+        self.hoveredImage = mask.to_surface(setcolor=BLACK_MOTION, unsetcolor=WHITE_MOTION)
+
+    def update(self):
+        if self.hovered():
+            self.image = self.hoveredImage
+        else:
+            self.image = self.normalImage
+
+
+class TextButton(Sprite):
+    def __init__(self, text: str, position: tuple, *groups: SpriteGroup):
+        super().__init__(f"button_{text}", position, pygame.Surface(assets.fonts["monogram"][32].size(text)), *groups)
+        self.image.fill(BLACK_MOTION)
+        self.set_centered(False)
+        self.interactive = True
+        self.text = GUIText(self.rect.center, text, 32, BLUE_MOTION2, False, 0, *groups)
+        self.text.interactive = True
+        self.updateAll = False
+
+    def update(self):
+        if self.hovered():
+            self.image.fill(WHITE_MOTION)
+            self.text.set_text_color(BLACK_MOTION)
+            if not self.updateAll:
+                self.updateAll = True
+        elif self.updateAll:
+            self.image.fill(BLACK_MOTION)
+            self.text.set_text_color(BLUE_MOTION2)
+
+
+class ExitButton(Sprite):
+    def __init__(self, position: tuple, *groups: SpriteGroup):
+        super().__init__("exit_button", position, assets.misc["close_icon"], *groups)
+        self.interactive = True
+        self.set_centered(False)
+        self.normalImage = self.image.copy()
+        mask = pygame.mask.from_surface(self.image)
+        self.hoveredImage = mask.to_surface(setcolor=BLACK_MOTION, unsetcolor=WHITE_MOTION)
+
+    def update(self):
+        if self.hovered():
+            self.image = self.hoveredImage
+        else:
+            self.image = self.normalImage

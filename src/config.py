@@ -2,8 +2,8 @@ import pygame.cursors
 from os.path import dirname, join
 
 # Screen
-WINDOW_WIDTH = 1920
-WINDOW_HEIGHT = 1080
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 720
 CAPTION = "Structure"
 # Canvas
 CANVAS_WIDTH = 640
