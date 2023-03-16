@@ -3,7 +3,6 @@ import src.input as input
 import src.scenes.scene_manager as scene_manager
 from src.scenes.scene import Scene
 from src.ui_objects import *
-from src.ui_objects import Image
 import src.time as Time
 
 
@@ -13,16 +12,16 @@ class CrimpCableScene(Scene):
         pygame.mouse.set_visible(False)
         self.cableType = cable_type
         self.crimpGroup = self.new_group()
-        self.colorBar = Image((160, 20), assets.misc["colorBar"])
-        self.indicator = Image((103, 16), assets.misc["indicator"])
+        self.colorBar = GUIImage((160, 20), assets.misc["colorBar"])
+        self.indicator = GUIImage((103, 16), assets.misc["indicator"])
         self.crimpGroup.add(self.colorBar)
         self.crimpGroup.add(self.indicator)
         self.movement = 100
         self.quality = None
         self.cablePopUpGroup = self.new_group()
-        self.cableNameText = Text((160, 100), "", WHITE_MOTION)
-        self.cableDoneText = Text((160, 115), "done!", WHITE_MOTION)
-        self.popUpBackground = Image((160, 90), pygame.transform.scale_by(assets.cables["pop_up_cables"], 2))
+        self.cableNameText = GUIText((160, 100), "", WHITE_MOTION)
+        self.cableDoneText = GUIText((160, 115), "done!", WHITE_MOTION)
+        self.popUpBackground = GUIImage((160, 90), pygame.transform.scale_by(assets.cables["pop_up_cables"], 2))
         self.cablePopUpGroup.add(self.popUpBackground)
         self.cablePopUpGroup.add(self.cableNameText)
         self.cablePopUpGroup.add(self.cableDoneText)
@@ -54,7 +53,7 @@ class CrimpCableScene(Scene):
                 self.quality = 2
                 self.cablePopUpGroup.add(Image((136 + 48 / 3, 70 + 48 / 4), assets.cables["star"]))
                 self.cablePopUpGroup.add(Image((136 + 48 / 3 * 2, 70 + 48 / 4), assets.cables["star"]))
-            elif color == pygame.Color(RED_MOTION2):
+            elif color == pygame.Color(RED_MOTION):
                 self.quality = 1
                 self.cablePopUpGroup.add(Image((136 + 24, 70 + 48 / 4), assets.cables["star"]))
             self.crimpGroup.active = False
@@ -62,7 +61,7 @@ class CrimpCableScene(Scene):
 
         if self.quality:
             self.cablePopUpGroup.active = True
-            self.cableNameText.set_text(f"Cable 568-{self.cableType}")
+            self.cableNameText.text = f"Cable 568-{self.cableType}"
             self.timer.update()
             if self.timer.done:
                 pygame.mouse.set_visible(True)

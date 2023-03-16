@@ -1,10 +1,10 @@
-import pygame
 from src.scenes.scene import Stage, StagedScene
 from src.ui_objects import *
-from src.commons import sin_wave
 import src.time as time
 import src.window as window
 import src.input as input
+from src.config import update_preferences
+
 
 def format_size(size: tuple):
     return f"{size[0]} x {size[1]}"
@@ -23,7 +23,7 @@ class OptionsStage(Stage):
 
         self.sizes = [(960, 540), (1280, 720), (1920, 1080)]
         self.sizeIndex = 1
-        self.displaySize = GUIText((250, 150), format_size(self.sizes[self.sizeIndex]), 32, BLUE_MOTION2, False, 0,
+        self.displaySize = GUIText((250, 150), format_size(self.sizes[self.sizeIndex]), 32, BLUE_MOTION, False, 0,
                                    self.sprites)
 
         self.leftArrow = ArrowButton((96 + 70, 150), "right", self.sprites)
@@ -62,6 +62,9 @@ class OptionsStage(Stage):
             pygame.display.set_mode(self.sizes[self.sizeIndex])
             window.width = self.sizes[self.sizeIndex][0]
             window.height = self.sizes[self.sizeIndex][1]
+
+            update_preferences({"window_width": window.width,
+                                "window_height": window.height})
 
         if self.closeButton.released() or input.keyboardKeys["ESC"]:
             self.scene.exit_stage()

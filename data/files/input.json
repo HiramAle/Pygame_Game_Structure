@@ -1,0 +1,34 @@
+{
+  "UP": {
+    "trigger": "press",
+    "binding": 119
+  },
+  "LEFT": {
+    "trigger": "press",
+    "binding": 97
+  },
+  "DOWN": {
+    "trigger": "press",
+    "binding": 115
+  },
+  "RIGHT": {
+    "trigger": "press",
+    "binding": 100
+  },
+  "INTERACT": {
+    "trigger": "press",
+    "binding": 101
+  },
+  "TAB": {
+    "trigger": "press",
+    "binding": 9
+  },
+  "ESC": {
+    "trigger": "press",
+    "binding": 27
+  },
+  "SPACE": {
+    "trigger": "press",
+    "binding": 32
+  }
+}

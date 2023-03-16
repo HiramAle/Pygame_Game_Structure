@@ -3,7 +3,7 @@ import src.assets as assets
 import src.scenes.scene_manager as scene_manager
 import math
 from threading import Event, Thread
-from src.config import *
+from src.constants import *
 from src.scenes.scene import Scene
 from src.sprite import Sprite, SpriteGroup
 from src.ui_objects import GUIText
@@ -76,7 +76,7 @@ class LoadingScreen(Scene):
             scene_manager.swap_scene(self, MainMenu())
 
     def render(self):
-        self.display.fill(BLUE_MOTION2)
+        self.display.fill(BLUE_MOTION)
         self.veilSurface.fill(BLACK_MOTION)
         self.sprites.render(self.veilSurface)
 

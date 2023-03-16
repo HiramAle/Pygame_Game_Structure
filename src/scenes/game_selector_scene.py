@@ -11,19 +11,20 @@ from src.modules.subnetting.ip_mask_scene import IpMaskScene
 class GameSelectorScene(Scene):
     def __init__(self):
         super().__init__("gameSelectorScene")
-        self.cablesIcon = Image((320 / 4, 70), assets.misc["cables_icon"])
+        self.cablesIcon = GUIImage((640 / 4, 70), assets.misc["cables_icon"])
+        self.cablesIcon.scale(2)
         self.cablesIcon.interactive = True
-        self.cablesTitle = Text((320 / 4, 110), "Cables", WHITE_MOTION)
+        self.cablesTitle = GUIText((640 / 4, 110), "Cables", 32, WHITE_MOTION, False)
 
-        self.subnettingIcon = Image((320 / 4 * 2, 70), assets.misc["subnetting_icon"])
+        self.subnettingIcon = GUIImage((640 / 4 * 2, 70), assets.misc["subnetting_icon"])
         self.subnettingIcon.interactive = True
-        self.subnettingTitle = Text((320 / 4 * 2, 110), "Subnetting", WHITE_MOTION)
+        self.subnettingTitle = GUIText((640 / 4 * 2, 110), "Subnetting",  32, WHITE_MOTION, False)
 
-        self.routingIcon = Image((320 / 4 * 3, 70), assets.misc["routing_icon"])
+        self.routingIcon = GUIImage((640 / 4 * 3, 70), assets.misc["routing_icon"])
         self.routingIcon.interactive = True
-        self.routingTitle = Text((320 / 4 * 3, 110), "Routing", WHITE_MOTION)
+        self.routingTitle = GUIText((640 / 4 * 3, 110), "Routing",  32, WHITE_MOTION, False)
 
-        self.back = SquareButton((15, 15), "back")
+        # self.back = Bu((15, 15), "back")
 
         self.sprites.add(self.cablesIcon)
         self.sprites.add(self.subnettingIcon)
@@ -31,25 +32,25 @@ class GameSelectorScene(Scene):
         self.sprites.add(self.cablesTitle)
         self.sprites.add(self.subnettingTitle)
         self.sprites.add(self.routingTitle)
-        self.sprites.add(self.back)
+        # self.sprites.add(self.back)
 
     def update(self) -> None:
         self.update_cursor()
 
-        if self.back.released() or input.keyboardKeys["ESC"]:
-            scene_manager.exit_scene()
+        # if self.back.released() or input.keyboardKeys["ESC"]:
+        #     scene_manager.exit_scene()
 
         if self.cablesIcon.clicked():
-            self.transitionPosition = self.cablesIcon._position
+            self.transitionPosition = self.cablesIcon.position
             scene_manager.transition_scene(self, OrderCableScene())
-
-        if self.subnettingIcon.clicked():
-            self.transitionPosition = self.subnettingIcon._position
-            scene_manager.transition_scene(self, SelectAreaScene())
+        #
+        # if self.subnettingIcon.clicked():
+        #     self.transitionPosition = self.subnettingIcon.position
+        #     scene_manager.transition_scene(self, SelectAreaScene())
 
         if self.routingIcon.clicked():
-            self.transitionPosition = self.routingIcon._position
-            scene_manager.transition_scene(self, TextScene())
+            self.transitionPosition = self.routingIcon.position
+            ...
 
     def render(self) -> None:
         self.display.fill(YELLOW_MOTION)

@@ -1,7 +1,10 @@
 import pygame
 import src.window as Window
 from src.config import *
+from src.load import load_json
+from src.constants import INPUT_DATA, CANVAS_WIDTH, CANVAS_HEIGHT
 
+bindings = load_json(INPUT_DATA)
 mouseButtons = {}
 mousePosition = pygame.math.Vector2()
 keyboardKeys = {}
@@ -24,15 +27,15 @@ def init():
         "scroll_down": False,
     }
 
-    for binding in BINDINGS:
+    for binding in bindings:
         keyboardKeys[binding] = False
 
 
 def soft_reset():
     global keyboardKeys, mouseButtons, keyDown, keyPressed
 
-    for action in BINDINGS:
-        if BINDINGS[action]["trigger"] == 'press':
+    for action in bindings:
+        if bindings[action]["trigger"] == 'press':
             keyboardKeys[action] = False
 
     mouseButtons['left'] = False
@@ -68,13 +71,13 @@ def update():
         if event.type == pygame.KEYDOWN:
             keyDown = True
             keyPressed = event.unicode
-            for binding in BINDINGS:
-                if event.key == BINDINGS[binding]["binding"]:
+            for binding in bindings:
+                if event.key == bindings[binding]["binding"]:
                     keyboardKeys[binding] = True
 
         if event.type == pygame.KEYUP:
-            for binding in BINDINGS:
-                if event.key == BINDINGS[binding]["binding"]:
+            for binding in bindings:
+                if event.key == bindings[binding]["binding"]:
                     keyboardKeys[binding] = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:

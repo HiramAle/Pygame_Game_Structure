@@ -3,7 +3,10 @@ from src.scenes.scene import Stage, StagedScene
 from src.ui_objects import *
 from src.commons import sin_wave
 from src.scenes.options_menu_stage import OptionsStage
+from src.scenes.game_selector_scene import GameSelectorScene
 import src.time as time
+import src.scenes.scene_manager as scene_manager
+
 
 
 class Logo(GUIImage):
@@ -40,6 +43,9 @@ class MainStage(Stage):
         self.update_groups()
         if self.exit.released():
             exit()
+
+        if self.newGame.released():
+            scene_manager.swap_scene(self.scene, GameSelectorScene())
 
         if self.options.released():
             self.scene.set_stage(OptionsStage(self.scene))
