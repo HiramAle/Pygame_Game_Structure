@@ -2,7 +2,7 @@ import pygame
 import src.window as Window
 import src.time as Time
 from src.scenes.scene import Scene
-from src.config import *
+from src.constants import *
 
 stackScene: list[Scene] = []
 

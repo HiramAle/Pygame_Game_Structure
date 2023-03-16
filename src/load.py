@@ -3,7 +3,7 @@ import os
 import json
 from src.commons import *
 from src.text import Font
-from src.config import *
+from src.constants import *
 
 
 def load_image(path: str, color_key=(0, 0, 0)) -> pygame.Surface:
@@ -16,6 +16,11 @@ def load_json(path: str) -> dict:
     with open(path, "r") as json_file:
         data = json.load(json_file)
     return data
+
+
+def save_json(path: str, data: dict):
+    with open(path, "w") as json_file:
+        json_file.write(json.dumps(data))
 
 
 def load_font(path: str, size: int) -> pygame.font.Font:

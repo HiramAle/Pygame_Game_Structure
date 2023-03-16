@@ -1,7 +1,7 @@
 import pygame
 import src.assets as assets
 from src.components import *
-from src.config import *
+from src.constants import *
 from src.sprite import Sprite, SpriteGroup
 
 button_colors: list[str] = ["BLUE"]
@@ -88,7 +88,7 @@ class Option(Sprite):
         self.image.fill(BLACK_MOTION)
         self.set_centered(False)
         self.interactive = True
-        self.text = GUIText(self.rect.center, option, 32, BLUE_MOTION2, False, 0, *groups)
+        self.text = GUIText(self.rect.center, option, 32, BLUE_MOTION, False, 0, *groups)
         self.text.interactive = True
         self.updateAll = False
 
@@ -100,7 +100,7 @@ class Option(Sprite):
                 self.updateAll = True
         elif self.updateAll:
             self.image.fill(BLACK_MOTION)
-            self.text.set_text_color(BLUE_MOTION2)
+            self.text.set_text_color(BLUE_MOTION)
 
     def disable(self):
         super().disable()
@@ -139,7 +139,7 @@ class TextButton(Sprite):
         self.image.fill(BLACK_MOTION)
         self.set_centered(False)
         self.interactive = True
-        self.text = GUIText(self.rect.center, text, 32, BLUE_MOTION2, False, 0, *groups)
+        self.text = GUIText(self.rect.center, text, 32, BLUE_MOTION, False, 0, *groups)
         self.text.interactive = True
         self.updateAll = False
 
@@ -151,7 +151,7 @@ class TextButton(Sprite):
                 self.updateAll = True
         elif self.updateAll:
             self.image.fill(BLACK_MOTION)
-            self.text.set_text_color(BLUE_MOTION2)
+            self.text.set_text_color(BLUE_MOTION)
 
 
 class ExitButton(Sprite):

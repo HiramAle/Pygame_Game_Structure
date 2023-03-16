@@ -1,17 +1,8 @@
-import pygame
-
-import src.input as input
-import src.scenes.scene_manager as scene_manager
-import src.window as Window
-from src.scenes.scene import Scene, StagedScene
+from src.scenes.scene import  StagedScene
 from src.scenes.main_menu_stage import MainStage
 from random import randint, choice
-# from src.modules.cables.order_cable_scene import OrderCableScene
-# from src.scenes.game_selector_scene import GameSelectorScene
-from src.commons import sin_wave
 from src.ui_objects import *
 import src.time as time
-import src.window as window
 
 
 class Cloud(Sprite):

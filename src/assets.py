@@ -1,7 +1,7 @@
 import pygame
 
 from src.load import *
-from src.config import *
+from src.constants import *
 from src.text import Font
 
 cursors: dict[str, pygame.cursors.Cursor] = {}
@@ -30,6 +30,8 @@ def load() -> None:
     cables = load_image_directory(CABLES_PATH)
     subnetting = load_image_directory(SUBNETTING_PATH)
     backgrounds = load_image_directory(BACKGROUNDS_PATH)
+
+    print(misc)
 
 
 # class Assets:

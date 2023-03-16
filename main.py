@@ -4,11 +4,14 @@ import src.window as window
 import src.time as time
 import src.scenes.scene_manager as scene_manager
 from src.scenes.loading_scene import LoadingScreen
-from src.modules.subnetting.subnetting_creator import *
+from src.scenes.game_selector_scene import GameSelectorScene
+import src.config as config
 
 
 class Game:
     def __init__(self):
+        pygame.init()
+        config.init()
         window.init()
         input.init()
         scene_manager.init(LoadingScreen())
@@ -16,12 +19,11 @@ class Game:
     def run(self):
         while True:
             input.update()
+            time.update()
             scene_manager.update()
             scene_manager.render(window.screen)
-            time.update()
             pygame.display.update()
 
 
 if __name__ == '__main__':
-    # generate_json_exercise()
     Game().run()

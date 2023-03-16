@@ -4,7 +4,7 @@ import pygame
 
 import src.assets as assets
 import src.input as input
-from src.config import *
+from src.constants import *
 from src.sprite import SpriteGroup, Sprite
 
 

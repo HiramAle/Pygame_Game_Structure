@@ -1,110 +1,34 @@
-import pygame.cursors
-from os.path import dirname, join
+import pygame
+from src.load import load_json, save_json
+from src.constants import USER_DATA_PATH, DEFAULT_PREFERENCES_PATH
 
-# Screen
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 720
-CAPTION = "Structure"
-# Canvas
-CANVAS_WIDTH = 640
-CANVAS_HEIGHT = 360
-FONT_SIZES = [16, 32, 48, 64]
-# Colors
-BACKGROUND_COLOR = "#1E1E1E"
-WHITE = "#E2E2E2"
-BLACK = "#FFFFFF"
-RED = "#EA5E5E"
-YELLOW = "#F7BA3E"
-BLUE = "#56B3B4"
-PURPLE = "#BF85BF"
-GRAY = "#465862"
-# Motion
-RED_MOTION = "#ff6470"
-YELLOW_MOTION = "#ffc66d"
-BLUE_MOTION = "#68ABDF"
-GREEN_MOTION = "#99c47a"
-WHITE_MOTION = "#f2f2f2"
-DARK_BLACK_MOTION = "#101010"
-BLACK_MOTION = "#242424"
-GRAY_MOTION = "#666666"
-BLUE_MOTION2 = "#1ab8d2"
-RED_MOTION2 = "#de5451"
-# Paths
-CURSORS_PATH = "data/images/cursors"
-EFFECTS_PATH = "data/images/effects"
-FONTS_PATH = "data/gui/fonts"
-SOUNDS_PATH = "data/audio"
-BUTTONS_PATH = "data/images/buttons"
-MISC_PATH = "data/images/misc"
-CONTROLLERS_PATH = "data/images/controllers"
-CABLES_PATH = "data/images/cables_scene"
-SUBNETTING_PATH = "data/images/subnetting_scene"
-BACKGROUNDS_PATH = "data/images/backgrounds"
-PROJECT_PATH = dirname(dirname(__file__))
-SUBNETTING_EXERCISES_PATH = "data/scenes/subnetting"
-# Input
-BINDINGS = {
-    "UP": {
-        "trigger": "press",
-        "binding": 119
-    },
-    "LEFT": {
-        "trigger": "press",
-        "binding": 97
-    },
-    "DOWN": {
-        "trigger": "press",
-        "binding": 115
-    },
-    "RIGHT": {
-        "trigger": "press",
-        "binding": 100
-    },
-    "INTERACT": {
-        "trigger": "press",
-        "binding": 101
-    },
-    "TAB": {
-        "trigger": "press",
-        "binding": 9
-    },
-    "ESC": {
-        "trigger": "press",
-        "binding": 27
-    },
-    "SPACE": {
-        "trigger": "press",
-        "binding": 32
-    }
+WINDOW_WIDTH = 0
+WINDOW_HEIGHT = 0
+SOUNDS = 0
+MUSIC = 0
 
-}
-CABLES = ["PLAIN_GREEN",
-          "STRIP_GREEN",
-          "PLAIN_ORANGE",
-          "STRIP_ORANGE",
-          "PLAIN_BLUE",
-          "STRIP_BLUE",
-          "PLAIN_BROWN",
-          "STRIP_BROWN"]
 
-CABLES_568_A = ["STRIP_GREEN",
-                "PLAIN_GREEN",
-                "STRIP_ORANGE",
-                "PLAIN_BLUE",
-                "STRIP_BLUE",
-                "PLAIN_ORANGE",
-                "STRIP_BROWN",
-                "PLAIN_BROWN"]
+def init():
+    global WINDOW_WIDTH, WINDOW_HEIGHT, SOUNDS, MUSIC
 
-CABLES_568_B = ["STRIP_ORANGE",
-                "PLAIN_ORANGE",
-                "STRIP_GREEN",
-                "PLAIN_BLUE",
-                "STRIP_BLUE",
-                "PLAIN_GREEN",
-                "STRIP_BROWN",
-                "PLAIN_BROWN"]
+    try:
+        preferences = load_json(USER_DATA_PATH)
+    except FileNotFoundError:
+        display_data = pygame.display.Info()
+        preferences = load_json(DEFAULT_PREFERENCES_PATH)
+        preferences["window_width"] = display_data.current_w
+        preferences["window_height"] = display_data.current_h
+        save_json(DEFAULT_PREFERENCES_PATH, preferences)
+        save_json(USER_DATA_PATH, preferences)
 
-CABLE_STANDARDS = {"A": CABLES_568_A, "B": CABLES_568_B}
+    WINDOW_WIDTH = preferences["window_width"]
+    WINDOW_HEIGHT = preferences["window_height"]
+    SOUNDS = preferences["sounds"]
+    MUSIC = preferences["music"]
 
-MOUSE_HOVER_EVENT = pygame.USEREVENT + 1
+
+def update_preferences(data: dict):
+    preferences = load_json(DEFAULT_PREFERENCES_PATH)
+    for key, value in data.items():
+        preferences[key] = value
+    save_json(USER_DATA_PATH, preferences)
